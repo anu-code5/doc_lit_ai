@@ -1,10 +1,12 @@
+import { useDropzone } from "react-dropzone";
 import api from "../services/api";
+import toast from "react-hot-toast";
 
-export default function PdfUpload() {
+export default function PdfUpload({ setUploadedFile }) {
 
-    const upload = async (e) => {
+    const onDrop = async (acceptedFiles) => {
 
-        const file = e.target.files[0];
+        const file = acceptedFiles[0];
 
         if (!file) return;
 
@@ -12,23 +14,59 @@ export default function PdfUpload() {
 
         form.append("file", file);
 
-        const res = await api.post("/upload", form);
+        try {
 
-        alert("Uploaded Successfully!");
+            const res = await api.post("/upload", form);
 
-        console.log(res.data);
+            setUploadedFile(file.name);
+
+            toast.success("PDF uploaded successfully!");
+
+            console.log(res.data);
+
+        } catch (err) {
+
+            console.error(err);
+
+            toast.error("Upload failed");
+
+        }
 
     };
 
+    const { getRootProps, getInputProps } = useDropzone({
+
+        onDrop,
+
+        accept: {
+            "application/pdf": [".pdf"]
+        },
+
+        multiple: false
+
+    });
+    
+
     return (
 
-        <div className="mt-8">
+        <div
+            {...getRootProps()}
+            className="border-2 border-dashed border-slate-500 rounded-xl p-4 text-center cursor-pointer hover:bg-slate-800 transition hover:border-blue-500"
+        >
 
-            <input
-                type="file"
-                accept=".pdf"
-                onChange={upload}
-            />
+            <input {...getInputProps()} />
+
+            <div className="text-5xl mb-3">
+                📄
+            </div>
+
+            <p className="text-slate-300 font-medium">
+                Drag & Drop PDF
+            </p>
+
+            <p className="text-sm text-slate-500 mt-2">
+                or click to browse
+            </p>
 
         </div>
 

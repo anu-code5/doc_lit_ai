@@ -2,17 +2,31 @@ import ReactMarkdown from "react-markdown";
 
 export default function Message({ message }) {
 
+    const user = message.role === "You";
+
     return (
 
-        <div className="mb-6">
+        <div
 
-            <div className="font-bold mb-2">
+            className={`flex mb-6 ${
+                user
+                    ? "justify-end"
+                    : "justify-start"
+            }`}
 
-                {message.role}
+        >
 
-            </div>
+            <div
 
-            <div className="bg-gray-100 p-4 rounded">
+                className={`max-w-2xl rounded-2xl px-4 py-2 shadow
+
+                ${
+                    user
+                        ? "bg-blue-600 text-white"
+                        : "bg-white"
+                }`}
+
+            >
 
                 <ReactMarkdown>
 

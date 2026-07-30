@@ -1,7 +1,13 @@
 import { useState } from "react";
 import api from "../services/api";
 
-export default function ChatInput({ setMessages }) {
+export default function ChatInput({
+
+    setMessages,
+
+    setLoading
+
+}) {
 
     const [question, setQuestion] = useState("");
 
@@ -10,24 +16,50 @@ export default function ChatInput({ setMessages }) {
         if (!question.trim()) return;
 
         setMessages(prev => [
+
             ...prev,
+
             {
+
                 role: "You",
+
                 text: question
+
             }
+
         ]);
 
-        const res = await api.post("/search", {
-            question
-        });
+        setLoading(true);
 
-        setMessages(prev => [
-            ...prev,
-            {
-                role: "AI",
-                text: res.data.answer.answer
+        try {
+            const res = await api.post("/search", {
+                question
+            });
+
+            console.log("API Response:", JSON.stringify(res.data, null, 2));
+
+            setMessages(prev => [
+                ...prev,
+                {
+                    role: "AI",
+                    text: res.data.answer.answer
+                }
+            ]);
+
+        } catch (err) {
+
+            console.error("Axios Error:", err);
+
+            if (err.response) {
+                console.log(err.response.data);
+                console.log(err.response.status);
             }
-        ]);
+
+        } finally {
+
+            setLoading(false);
+
+        }
 
         setQuestion("");
 
@@ -35,28 +67,33 @@ export default function ChatInput({ setMessages }) {
 
     return (
 
-        <div className="p-6 border-t flex gap-3">
+        <div className="bg-white border-t p-4 flex gap-4">
 
             <input
 
-                className="flex-1 border rounded p-3"
+                className="flex-1 border rounded-xl px-4 py-3 outline-none"
+
+                placeholder="Ask anything about the document..."
 
                 value={question}
 
                 onChange={(e)=>setQuestion(e.target.value)}
 
                 onKeyDown={(e)=>{
+
                     if(e.key==="Enter")
+
                         ask();
+
                 }}
 
             />
 
             <button
 
-                onClick={ask}
+                className="bg-blue-600 hover:bg-blue-700 text-white px-6 rounded-xl"
 
-                className="bg-blue-600 text-white px-6 rounded"
+                onClick={ask}
 
             >
 
