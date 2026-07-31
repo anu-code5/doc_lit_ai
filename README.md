@@ -259,4 +259,4 @@ This project is intended for educational and portfolio purposes.
 
 **Anushka Chaudhary**
 
-LinkedIn: [https://linkedin.com/in/yourprofile](https://www.linkedin.com/in/anushka-chaudhary-3663a7276/)
+LinkedIn: https://www.linkedin.com/in/anushka-chaudhary-3663a7276/
